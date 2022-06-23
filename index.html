@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Drawing By Michael Perard</title>
+	<style type="text/css">
+		body{margin:0;padding:0;}
+		#ToMenu{position:absolute;top:50px;left:15px;display:inline-block;background-color:#e8463a;color:white;text-decoration:none;font-family:monospace;transition:.5s;border:solid 6px #e8463a;border-radius:30px;box-shadow:inset 0 0 0 9px white;font-size:45px;padding:25px 50px;}
+		#ToMenu:hover{transition:.8s;box-shadow:none;}
+
+		#Ink{position:absolute;width:100%;top:0;left:0;height:40px;background-color:white;border-bottom:solid 1px grey;}
+		#Ink > span {background-color:black;height:100%;display:block;}
+		#Draw{width:100%;height: 100%;pointer-events:none;}
+		#DrawHere{width:100vw;height:100vh;background-color:whitesmoke;}
+		@media (min-width:992px) {
+			#Ink{height:10px;}
+			#ToMenu{top:20px;border:solid 2px #e8463a;border-radius:10px;box-shadow:inset 0 0 0 2px white;font-size:20px;padding:10px 20px;}
+		}
+
+
+	</style>
+</head>
+
+<body>
+	<a id="ToMenu" href="http://mikgamer.fr">mikgamer.fr</a>
+	<div id="Ink" style="width:100%;">
+		<span></span>
+	</div>
+	<div id="DrawHere">
+		<svg id="Draw" xmlns="http://www.w3.org/2000/svg">
+			
+		</svg>
+	</div>
+
+	<script type="text/javascript">
+		var Ink = document.querySelector( '#Ink > span' );
+		var Draw = document.querySelector( '#Draw' );
+		var DrawHere = document.querySelector( '#DrawHere' );
+		var DrawCoords = []; // Array of coordinates
+		var i = 0; // Detect if first coordinates 
+		var isDown = false; // Is the mouse up or 
+
+		// Mouse
+		DrawHere.onmousedown = (event) => {
+			isDown = true;
+			DrawHere.onmousemove = (event) => {
+			    var x = event.clientX;
+			    var y = event.clientY;
+			    Ink.style.width = 100 - DrawCoords.length / 10 + "%";
+			    if (DrawCoords.length < 1000 && isDown === true) {
+				    Draw.innerHTML = '<path fill=none stroke=black stroke-linecap="round" stroke-width=5 d="'+DrawCoords.join(" ")+'" />';
+				    if (i === 0) { 
+				    	DrawCoords.push( "M" + x + " " + y );
+				    	i++;
+					} else {
+						DrawCoords.push( "L" + x + " " + y );
+					}
+			    } else { 
+			    	DrawCoords = [];
+			    	i = 0;
+			    	isDown = false;
+			    }
+			}
+		}
+
+		DrawHere.onmouseup = (event) => {
+		    DrawCoords = [];
+			i = 0;
+			isDown = false;
+		}
+
+		// Touch
+		DrawHere.ontouchstart = (event) => {
+			isDown = true;
+			DrawHere.ontouchmove = (event) => {
+			    var x = event.touches[0].clientX;
+			    var y = event.touches[0].clientY;
+			    Ink.style.width = 100 - DrawCoords.length / 5 + "%";
+			    if (DrawCoords.length < 500 && isDown === true) {
+				    Draw.innerHTML = '<path fill=none stroke=black stroke-linecap="round" stroke-width=20 d="'+DrawCoords.join(" ")+'" />';
+				    if (i === 0) { 
+				    	DrawCoords.push( "M" + x + " " + y );
+				    	i++;
+					} else {
+						DrawCoords.push( "L" + x + " " + y );
+					}
+			    } else { 
+			    	DrawCoords = [];
+			    	i = 0;
+			    	isDown = false;
+			    }
+			}
+		}
+
+		DrawHere.ontouchend = (event) => {
+		    DrawCoords = [];
+			i = 0;
+			isDown = false;
+		}
+
+		// Made by Michael PERARD
+	</script>
+</body>
+
+
+</html>
